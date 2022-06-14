@@ -208,6 +208,13 @@
       document.documentElement.classList.add('shopify-design-mode');
     }
     </script>
+
+    <!--  START INFINITE SCROLL COLLECTION PAGE  -->
+    {% if template contains 'collection' %}
+      <script src="{{ 'ajaxinate.js' | asset_url }}" defer="defer" ></script>
+    {% endif %}
+    <!--  END INFINITE SCROLL COLLECTION PAGE  -->
+    
   </head>
 
   <body class="gradient">

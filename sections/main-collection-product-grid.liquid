@@ -98,7 +98,7 @@
           <div class="collection{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}">
             <div class="loading-overlay gradient"></div>
     
-            <ul id="product-grid" data-id="{{ section.id }}" class="
+            <ul id="product-grid" data-id="{{ section.id }}" class="wrapper-items-collection
               grid product-grid grid--{{ section.settings.columns_mobile }}-col-tablet-down
               grid--{{ section.settings.columns_desktop }}-col-desktop">
               {%- for product in collection.products -%}
@@ -122,16 +122,49 @@
               {%- endfor -%}
             </ul>
     
+            {% comment %}
             {%- if paginate.pages > 1 -%}
               {% render 'pagination', paginate: paginate, anchor: '' %}
             {%- endif -%}
+            {% endcomment %}
+            <div id="pagination-collection">
+              {% if paginate.next %}
+                <a href="{{ paginate.next.url }}" class="secondary--button">LOAD MORE</a>
+                <div class="infor-pagination">(Showing <span id="count-items-displayed">{{ section.settings.products_per_page }}</span> of {{ collection.all_products_count }} products )</div>
+              {% endif %}
+            </div>
           </div>
         {%- endif -%}
       {%- endpaginate -%}
     </div>
   </div>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var endlessScroll = new Ajaxinate({
+      container: 'wrapper-items-collection',
+      pagination: '#pagination-collection'
+    });
 
+    const initList = [...document.querySelectorAll("#product-grid li")];
+    let customLayout = '<div>'
+    const initListNew = initList.map((item,index)=>{
+      if(index <5 ){
+        customLayout+=item.outerHTML
+      }
+      if (index === 5){
+        customLayout = customLayout + '</div>' + item.outerHTML
+      }
+      if(index > 5) {
+        customLayout +=item.outerHTML;
+      }
+      
+
+    })
+    document.querySelector("#product-grid").innerHTML = `${customLayout}`;
+    console.log("item", customLayout);
+  });
+</script>
 
 {% schema %}
 {
@@ -141,10 +174,10 @@
     {
       "type": "range",
       "id": "products_per_page",
-      "min": 8,
+      "min": 1,
       "max": 24,
-      "step": 4,
-      "default": 16,
+      "step": 1,
+      "default": 3,
       "label": "t:sections.main-collection-product-grid.settings.products_per_page.label"
     },
     {
